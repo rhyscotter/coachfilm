@@ -1,0 +1,1117 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Coach Film Room</title>
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --panel:rgba(17,17,17,.90);
+      --panel2:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.10);
+      --text:#fff;
+      --muted:rgba(255,255,255,.66);
+
+      --accent:#7B2EFF;
+      --accent2:#B266FF;
+      --clubGlow:rgba(123,46,255,.18);
+
+      --ok:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+
+      --radius:26px;
+      --shadow:0 22px 60px rgba(0,0,0,.45);
+      --max:1480px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, var(--clubGlow), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,.04), transparent 24%),
+        linear-gradient(180deg,#080808 0%, #111 100%);
+      overflow-x:hidden;
+    }
+
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.07;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size:24px 24px;
+      mask-image:linear-gradient(to bottom, rgba(0,0,0,.8), transparent 92%);
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:var(--max);
+      margin:0 auto;
+      padding:28px 20px 48px;
+    }
+
+    .hero{
+      border:1px solid var(--border);
+      border-radius:32px;
+      padding:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 0 18px var(--accent);
+    }
+
+    .title{
+      margin:14px 0 8px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:clamp(42px,7vw,88px);
+      line-height:.94;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
+    .subtitle{
+      max-width:760px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.65;
+    }
+
+    .hero-pills{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .pill{
+      padding:11px 16px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.12fr .88fr;
+      gap:18px;
+    }
+
+    @media (max-width:1100px){
+      .layout{grid-template-columns:1fr}
+    }
+
+    .stack{
+      display:grid;
+      gap:18px;
+    }
+
+    .card{
+      position:relative;
+      overflow:hidden;
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .card:before{
+      content:"";
+      position:absolute;
+      left:0; right:0; top:0;
+      height:1px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+    }
+
+    .card-inner{padding:22px}
+
+    .section-title{
+      display:inline-block;
+      margin:0 0 6px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:30px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+
+    .section-title:after{
+      content:"";
+      display:block;
+      width:74px;
+      height:3px;
+      border-radius:999px;
+      margin-top:8px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 0 16px var(--accent);
+      transition:width .22s ease;
+    }
+
+    .card:hover .section-title:after{width:116px}
+
+    .muted{color:var(--muted)}
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .form-grid .full{grid-column:1 / -1}
+
+    @media (max-width:760px){
+      .form-grid{grid-template-columns:1fr}
+    }
+
+    label{
+      display:block;
+      margin:0 0 8px;
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:1px solid rgba(255,255,255,.10);
+      background:var(--panel2);
+      color:#fff;
+      border-radius:18px;
+      padding:14px 14px;
+      font-size:14px;
+      outline:none;
+    }
+
+    textarea{
+      min-height:120px;
+      resize:vertical;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:rgba(255,255,255,.22);
+      box-shadow:0 0 0 3px rgba(123,46,255,.16);
+    }
+
+    .segmented{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .seg-btn{
+      appearance:none;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border-radius:999px;
+      padding:12px 16px;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .seg-btn.active{
+      border-color:transparent;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 30px var(--clubGlow);
+    }
+
+    .upload-box{
+      border:1px dashed rgba(255,255,255,.18);
+      border-radius:22px;
+      background:rgba(255,255,255,.03);
+      padding:20px;
+    }
+
+    .upload-box input[type="file"]{
+      padding:12px;
+      background:rgba(255,255,255,.02);
+    }
+
+    .upload-note{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      padding:14px 18px;
+      border-radius:18px;
+      font-size:13px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+
+    .btn-primary{
+      color:#fff;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 12px 34px var(--clubGlow);
+    }
+
+    .btn-secondary{
+      color:#fff;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--border);
+    }
+
+    .status{
+      margin-top:16px;
+      min-height:22px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .status.success{color:var(--ok)}
+    .status.warn{color:var(--warn)}
+    .status.error{color:var(--danger)}
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:16px;
+    }
+
+    @media (max-width:640px){
+      .stats{grid-template-columns:1fr}
+    }
+
+    .stat{
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:rgba(255,255,255,.03);
+      padding:16px;
+    }
+
+    .stat-label{
+      font-size:11px;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:8px;
+    }
+
+    .stat-value{
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:34px;
+      line-height:1;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
+    .list{
+      display:grid;
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .film-item{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:rgba(255,255,255,.03);
+      padding:16px;
+    }
+
+    .film-name{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:.01em;
+    }
+
+    .film-meta{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+
+    .tag-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .tag{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+    }
+
+    .film-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .mini-btn{
+      appearance:none;
+      cursor:pointer;
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:#fff;
+    }
+
+    .helper{
+      margin-top:12px;
+      padding:14px 16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.035);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .empty{
+      border:1px dashed rgba(255,255,255,.14);
+      border-radius:22px;
+      padding:24px;
+      text-align:center;
+      color:var(--muted);
+      background:rgba(255,255,255,.02);
+      margin-top:16px;
+    }
+
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="topbar">
+        <div>
+          <div class="eyebrow">
+            <span class="dot"></span>
+            <span>All In One</span>
+          </div>
+          <h1 class="title">Coach Film Room</h1>
+          <div class="subtitle">
+            Send individual or mass film clips to players using either a pasted video link or an uploaded file.
+          </div>
+        </div>
+
+        <div class="hero-pills">
+          <div class="pill" id="clubPill">Club</div>
+          <div class="pill" id="coachPill">Coach</div>
+        
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="stack">
+        <div class="card">
+          <div class="card-inner">
+            <h2 class="section-title">Send Film</h2>
+            <div class="muted">Choose your send type, choose link or upload, then assign the film.</div>
+
+            <div class="segmented" id="assignMode">
+              <button class="seg-btn active" data-mode="single" type="button">Single Player</button>
+              <button class="seg-btn" data-mode="mass" type="button">Mass Send</button>
+            </div>
+
+            <div class="segmented" id="videoMode" style="margin-top:14px;">
+              <button class="seg-btn active" data-video-mode="link" type="button">Paste Link</button>
+              <button class="seg-btn" data-video-mode="upload" type="button">Upload File</button>
+            </div>
+
+            <div class="form-grid">
+              <div class="full">
+                <label for="filmTitle">Film Title</label>
+                <input id="filmTitle" type="text" placeholder="Example: Pressing clips vs high line"/>
+              </div>
+
+              <div class="full">
+                <label for="filmNotes">Coach Notes</label>
+                <textarea id="filmNotes" placeholder="Write what you want the player or players to focus on..."></textarea>
+              </div>
+
+              <div class="full" id="linkWrap">
+                <label for="filmUrl">Video URL</label>
+                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4, or Wix-hosted video link"/>
+              </div>
+
+              <div class="full hidden" id="uploadWrap">
+                <label for="filmUpload">Upload Video File</label>
+                <div class="upload-box">
+                  <input id="filmUpload" type="file" accept="video/*"/>
+                  <div class="upload-note" id="uploadFileName">
+                    No file selected yet.
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label for="teamSelect">Team</label>
+                <select id="teamSelect">
+                  <option value="">Select team</option>
+                </select>
+              </div>
+
+              <div id="singlePlayerWrap">
+                <label for="playerSelect">Player</label>
+                <select id="playerSelect">
+                  <option value="">Select player</option>
+                </select>
+              </div>
+
+              <div class="full hidden" id="massWrap">
+                <label for="massType">Mass Send Type</label>
+                <select id="massType">
+                  <option value="team">Entire Team</option>
+                  <option value="custom">Selected Players</option>
+                </select>
+              </div>
+
+              <div class="full hidden" id="multiPlayersWrap">
+                <label for="multiPlayers">Selected Players</label>
+                <select id="multiPlayers" multiple style="min-height:150px;"></select>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="sendBtn" type="button">Send Film</button>
+              <button class="btn btn-secondary" id="saveDraftBtn" type="button">Save Draft</button>
+              <button class="btn btn-secondary" id="clearBtn" type="button">Clear</button>
+            </div>
+
+            <div class="status" id="statusText">Ready.</div>
+
+            <div class="helper">
+              This repo version supports both input methods in the UI. For upload mode, your Wix page code will handle the actual file upload and return the uploaded file URL back into the save flow.
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-inner">
+            <h2 class="section-title">Recent Assignments</h2>
+            <div class="muted">Latest film items sent by the coach.</div>
+            <div class="list" id="filmList"></div>
+            <div class="empty" id="emptyState">No film assignments yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="card">
+          <div class="card-inner">
+            <h2 class="section-title">Overview</h2>
+            <div class="muted">Quick look at current film room activity.</div>
+
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-label">Total Films</div>
+                <div class="stat-value" id="totalFilms">0</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Single Sends</div>
+                <div class="stat-value" id="singleCount">0</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Mass Sends</div>
+                <div class="stat-value" id="massCount">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-inner">
+            <h2 class="section-title">Preview</h2>
+            <div class="muted">Preview pasted links here. Uploaded files will preview once Wix returns the uploaded file URL.</div>
+
+            <div style="margin-top:16px;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:#000;">
+              <iframe
+                id="previewFrame"
+                src=""
+                title="Film Preview"
+                style="width:100%;height:320px;border:0;background:#000;"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+
+            <div class="helper" id="previewText">
+              Paste a supported video link to preview it here.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      mode: "single",
+      videoMode: "link",
+      clubName: "Club",
+      coachName: "Coach",
+      teams: [],
+      players: [],
+      recentFilms: [],
+      uploadedFile: null
+    };
+
+    const els = {
+      clubPill: document.getElementById("clubPill"),
+      coachPill: document.getElementById("coachPill"),
+      teamSelect: document.getElementById("teamSelect"),
+      playerSelect: document.getElementById("playerSelect"),
+      multiPlayers: document.getElementById("multiPlayers"),
+      massType: document.getElementById("massType"),
+      singlePlayerWrap: document.getElementById("singlePlayerWrap"),
+      massWrap: document.getElementById("massWrap"),
+      multiPlayersWrap: document.getElementById("multiPlayersWrap"),
+      filmTitle: document.getElementById("filmTitle"),
+      filmUrl: document.getElementById("filmUrl"),
+      filmNotes: document.getElementById("filmNotes"),
+      filmUpload: document.getElementById("filmUpload"),
+      uploadFileName: document.getElementById("uploadFileName"),
+      linkWrap: document.getElementById("linkWrap"),
+      uploadWrap: document.getElementById("uploadWrap"),
+      sendBtn: document.getElementById("sendBtn"),
+      saveDraftBtn: document.getElementById("saveDraftBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      statusText: document.getElementById("statusText"),
+      filmList: document.getElementById("filmList"),
+      emptyState: document.getElementById("emptyState"),
+      totalFilms: document.getElementById("totalFilms"),
+      singleCount: document.getElementById("singleCount"),
+      massCount: document.getElementById("massCount"),
+      previewFrame: document.getElementById("previewFrame"),
+      previewText: document.getElementById("previewText"),
+      assignMode: document.getElementById("assignMode"),
+      videoMode: document.getElementById("videoMode")
+    };
+
+    function clean(v){ return String(v || "").trim(); }
+
+    function setStatus(text, type){
+      els.statusText.className = "status" + (type ? " " + type : "");
+      els.statusText.textContent = text || "";
+    }
+
+    function applyTheme(payload = {}){
+      const accent = clean(payload.accent) || "#7B2EFF";
+      const accent2 = clean(payload.accent2) || "#B266FF";
+      const glow = clean(payload.clubGlow) || "rgba(123,46,255,.18)";
+      document.documentElement.style.setProperty("--accent", accent);
+      document.documentElement.style.setProperty("--accent2", accent2);
+      document.documentElement.style.setProperty("--clubGlow", glow);
+    }
+
+    function renderHeader(){
+      els.clubPill.textContent = state.clubName || "Club";
+      els.coachPill.textContent = state.coachName || "Coach";
+    }
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function renderTeams(){
+      const options = ['<option value="">Select team</option>']
+        .concat(state.teams.map(team => {
+          const id = clean(team.id || team._id);
+          const name = clean(team.name || team.title || team.teamName);
+          return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
+        }));
+      els.teamSelect.innerHTML = options.join("");
+    }
+
+    function getPlayersForSelectedTeam(){
+      const teamId = clean(els.teamSelect.value);
+      if(!teamId) return state.players;
+
+      return state.players.filter(player => {
+        const one = clean(player.teamId);
+        const many = Array.isArray(player.teamIds) ? player.teamIds.map(clean) : [];
+        return one === teamId || many.includes(teamId);
+      });
+    }
+
+    function renderPlayers(){
+      const filtered = getPlayersForSelectedTeam();
+
+      const singleOptions = ['<option value="">Select player</option>']
+        .concat(filtered.map(player => {
+          const id = clean(player.id || player._id || player.playerId);
+          const name = clean(player.name || player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
+          return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
+        }));
+      els.playerSelect.innerHTML = singleOptions.join("");
+
+      const multiOptions = filtered.map(player => {
+        const id = clean(player.id || player._id || player.playerId);
+        const name = clean(player.name || player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
+        return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
+      });
+      els.multiPlayers.innerHTML = multiOptions.join("");
+    }
+
+    function setMode(mode){
+      state.mode = mode === "mass" ? "mass" : "single";
+
+      Array.from(els.assignMode.querySelectorAll(".seg-btn")).forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === state.mode);
+      });
+
+      const isMass = state.mode === "mass";
+      els.singlePlayerWrap.classList.toggle("hidden", isMass);
+      els.massWrap.classList.toggle("hidden", !isMass);
+
+      updateMassTypeUI();
+    }
+
+    function setVideoMode(mode){
+      state.videoMode = mode === "upload" ? "upload" : "link";
+
+      Array.from(els.videoMode.querySelectorAll(".seg-btn")).forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.videoMode === state.videoMode);
+      });
+
+      const isUpload = state.videoMode === "upload";
+      els.linkWrap.classList.toggle("hidden", isUpload);
+      els.uploadWrap.classList.toggle("hidden", !isUpload);
+
+      if(isUpload){
+        els.previewText.textContent = state.uploadedFile
+          ? "File selected. Wix upload will provide the preview URL."
+          : "Choose a video file to upload.";
+        els.previewFrame.src = "";
+      } else {
+        updatePreview();
+      }
+    }
+
+    function updateMassTypeUI(){
+      const isMass = state.mode === "mass";
+      const showCustom = isMass && clean(els.massType.value) === "custom";
+      els.multiPlayersWrap.classList.toggle("hidden", !showCustom);
+    }
+
+    function toEmbedUrl(url){
+      const raw = clean(url);
+      if(!raw) return "";
+
+      if(raw.includes("youtube.com/watch?v=")){
+        const id = raw.split("v=")[1]?.split("&")[0];
+        return id ? `https://www.youtube.com/embed/${id}` : "";
+      }
+      if(raw.includes("youtu.be/")){
+        const id = raw.split("youtu.be/")[1]?.split("?")[0];
+        return id ? `https://www.youtube.com/embed/${id}` : "";
+      }
+      if(raw.includes("vimeo.com/")){
+        const id = raw.split("vimeo.com/")[1]?.split("?")[0];
+        return id ? `https://player.vimeo.com/video/${id}` : "";
+      }
+      if(raw.endsWith(".mp4")) return raw;
+
+      return raw;
+    }
+
+    function updatePreview(){
+      if(state.videoMode !== "link"){
+        els.previewFrame.src = "";
+        return;
+      }
+
+      const url = clean(els.filmUrl.value);
+      const embed = toEmbedUrl(url);
+
+      if(!embed){
+        els.previewFrame.src = "";
+        els.previewText.textContent = "Paste a supported video link to preview it here.";
+        return;
+      }
+
+      els.previewFrame.src = embed;
+      els.previewText.textContent = "Preview loaded.";
+    }
+
+    function getSelectedMultiPlayers(){
+      return Array.from(els.multiPlayers.selectedOptions || []).map(opt => clean(opt.value)).filter(Boolean);
+    }
+
+    function buildPayload(action){
+      return {
+        action,
+        mode: state.mode,
+        videoMode: state.videoMode,
+        title: clean(els.filmTitle.value),
+        notes: clean(els.filmNotes.value),
+        videoUrl: state.videoMode === "link" ? clean(els.filmUrl.value) : "",
+        uploadFileName: state.uploadedFile ? clean(state.uploadedFile.name) : "",
+        uploadFileType: state.uploadedFile ? clean(state.uploadedFile.type) : "",
+        teamId: clean(els.teamSelect.value),
+        playerId: clean(els.playerSelect.value),
+        massType: clean(els.massType.value),
+        playerIds: getSelectedMultiPlayers(),
+        timestamp: new Date().toISOString()
+      };
+    }
+
+    function validatePayload(payload){
+      if(!payload.title) return "Add a film title.";
+
+      if(payload.videoMode === "link" && !payload.videoUrl){
+        return "Add a video URL.";
+      }
+
+      if(payload.videoMode === "upload" && !state.uploadedFile){
+        return "Choose a file to upload.";
+      }
+
+      if(state.mode === "single" && !payload.playerId){
+        return "Select a player.";
+      }
+
+      if(state.mode === "mass"){
+        if(payload.massType === "team" && !payload.teamId){
+          return "Select a team for mass send.";
+        }
+        if(payload.massType === "custom" && !payload.playerIds.length){
+          return "Select at least one player.";
+        }
+      }
+
+      return "";
+    }
+
+    function postToWix(type, payload = {}){
+      if(window.parent){
+        window.parent.postMessage({ type, payload }, "*");
+      }
+    }
+
+    function clearForm(){
+      els.filmTitle.value = "";
+      els.filmNotes.value = "";
+      els.filmUrl.value = "";
+      els.teamSelect.value = "";
+      els.playerSelect.value = "";
+      els.massType.value = "team";
+      Array.from(els.multiPlayers.options).forEach(opt => opt.selected = false);
+      if(els.filmUpload) els.filmUpload.value = "";
+      state.uploadedFile = null;
+      els.uploadFileName.textContent = "No file selected yet.";
+      renderPlayers();
+      updateMassTypeUI();
+      updatePreview();
+      setStatus("Cleared.", "success");
+    }
+
+    function renderFilms(){
+      const items = Array.isArray(state.recentFilms) ? state.recentFilms : [];
+      els.filmList.innerHTML = "";
+
+      const singles = items.filter(x => clean(x.mode) === "single").length;
+      const masses = items.filter(x => clean(x.mode) === "mass").length;
+
+      els.totalFilms.textContent = String(items.length);
+      els.singleCount.textContent = String(singles);
+      els.massCount.textContent = String(masses);
+      els.emptyState.style.display = items.length ? "none" : "block";
+
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "film-item";
+
+        const title = clean(item.title) || "Untitled Film";
+        const recipientLabel = clean(item.recipientLabel || item.playerName || "");
+        const teamName = clean(item.teamName);
+        const notes = clean(item.notes);
+        const mode = clean(item.mode) || "single";
+        const videoType = clean(item.videoMode || item.videoType || "link");
+        const created = clean(item.createdDate || item.createdAt || "");
+        const formattedDate = created ? new Date(created).toLocaleString() : "";
+
+        div.innerHTML = `
+          <div class="film-name">${escapeHtml(title)}</div>
+          <div class="film-meta">
+            ${recipientLabel ? `Sent to: ${escapeHtml(recipientLabel)}<br/>` : ""}
+            ${teamName ? `Team: ${escapeHtml(teamName)}<br/>` : ""}
+            ${formattedDate ? `Created: ${escapeHtml(formattedDate)}` : ""}
+          </div>
+
+          <div class="tag-row">
+            <div class="tag">${escapeHtml(mode === "mass" ? "Mass Send" : "Single Send")}</div>
+            <div class="tag">${escapeHtml(videoType === "upload" ? "Uploaded File" : "Video Link")}</div>
+          </div>
+
+          ${notes ? `<div class="film-meta" style="margin-top:12px;">${escapeHtml(notes)}</div>` : ""}
+
+          <div class="film-actions">
+            <button class="mini-btn" type="button" data-action="preview" data-url="${escapeHtml(clean(item.videoUrl))}">Preview</button>
+            <button class="mini-btn" type="button" data-action="edit" data-id="${escapeHtml(clean(item.id || item._id))}">Edit</button>
+            <button class="mini-btn" type="button" data-action="delete" data-id="${escapeHtml(clean(item.id || item._id))}">Delete</button>
+          </div>
+        `;
+
+        els.filmList.appendChild(div);
+      });
+    }
+
+    els.assignMode.addEventListener("click", (e) => {
+      const btn = e.target.closest(".seg-btn");
+      if(!btn) return;
+      setMode(btn.dataset.mode);
+    });
+
+    els.videoMode.addEventListener("click", (e) => {
+      const btn = e.target.closest(".seg-btn");
+      if(!btn) return;
+      setVideoMode(btn.dataset.videoMode);
+    });
+
+    els.teamSelect.addEventListener("change", renderPlayers);
+    els.massType.addEventListener("change", updateMassTypeUI);
+    els.filmUrl.addEventListener("input", updatePreview);
+
+    els.filmUpload.addEventListener("change", (e) => {
+      const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+      state.uploadedFile = file;
+
+      if(file){
+        els.uploadFileName.textContent = `Selected: ${file.name}`;
+        els.previewText.textContent = "File selected. Wix upload will provide the preview URL.";
+        setStatus("File selected and ready for Wix upload.", "success");
+      } else {
+        els.uploadFileName.textContent = "No file selected yet.";
+      }
+    });
+
+    els.sendBtn.addEventListener("click", () => {
+      const payload = buildPayload("sendFilm");
+      const error = validatePayload(payload);
+      if(error){
+        setStatus(error, "error");
+        return;
+      }
+
+      if(state.videoMode === "upload"){
+        setStatus("Uploading and sending film...", "warn");
+        postToWix("UPLOAD_AND_SEND_FILM", payload);
+      } else {
+        setStatus("Sending film...", "warn");
+        postToWix("SEND_FILM", payload);
+      }
+    });
+
+    els.saveDraftBtn.addEventListener("click", () => {
+      const payload = buildPayload("saveDraft");
+      const error = validatePayload(payload);
+      if(error){
+        setStatus(error, "error");
+        return;
+      }
+
+      if(state.videoMode === "upload"){
+        setStatus("Uploading and saving draft...", "warn");
+        postToWix("UPLOAD_AND_SAVE_FILM_DRAFT", payload);
+      } else {
+        setStatus("Saving draft...", "warn");
+        postToWix("SAVE_FILM_DRAFT", payload);
+      }
+    });
+
+    els.clearBtn.addEventListener("click", clearForm);
+
+    els.filmList.addEventListener("click", (e) => {
+      const btn = e.target.closest(".mini-btn");
+      if(!btn) return;
+
+      const action = btn.dataset.action;
+      if(action === "preview"){
+        const url = clean(btn.dataset.url);
+        if(url){
+          setVideoMode("link");
+          els.filmUrl.value = url;
+          updatePreview();
+          setStatus("Preview loaded from assignment.", "success");
+        }
+        return;
+      }
+
+      if(action === "edit"){
+        postToWix("EDIT_FILM", { id: clean(btn.dataset.id) });
+        return;
+      }
+
+      if(action === "delete"){
+        postToWix("DELETE_FILM", { id: clean(btn.dataset.id) });
+      }
+    });
+
+    window.addEventListener("message", (event) => {
+      const msg = event.data || {};
+      const type = msg.type;
+      const payload = msg.payload || {};
+
+      if(type === "INIT_FILM_ROOM"){
+        state.clubName = clean(payload.clubName) || "Club";
+        state.coachName = clean(payload.coachName) || "Coach";
+        state.teams = Array.isArray(payload.teams) ? payload.teams : [];
+        state.players = Array.isArray(payload.players) ? payload.players : [];
+        state.recentFilms = Array.isArray(payload.recentFilms) ? payload.recentFilms : [];
+        applyTheme(payload.theme || payload);
+        renderHeader();
+        renderTeams();
+        renderPlayers();
+        renderFilms();
+        setStatus("Film room ready.", "success");
+      }
+
+      if(type === "FILM_ROOM_THEME"){
+        applyTheme(payload);
+      }
+
+      if(type === "FILM_ROOM_DATA"){
+        if(Array.isArray(payload.teams)) state.teams = payload.teams;
+        if(Array.isArray(payload.players)) state.players = payload.players;
+        if(Array.isArray(payload.recentFilms)) state.recentFilms = payload.recentFilms;
+        renderTeams();
+        renderPlayers();
+        renderFilms();
+      }
+
+      if(type === "FILM_ROOM_STATUS"){
+        setStatus(clean(payload.message) || "Updated.", clean(payload.kind) || "");
+      }
+
+      if(type === "LOAD_FILM_FOR_EDIT"){
+        els.filmTitle.value = clean(payload.title);
+        els.filmNotes.value = clean(payload.notes);
+        els.teamSelect.value = clean(payload.teamId);
+        renderPlayers();
+
+        const videoMode = clean(payload.videoMode || payload.videoType || "link");
+        setVideoMode(videoMode);
+
+        if(videoMode === "link"){
+          els.filmUrl.value = clean(payload.videoUrl);
+          updatePreview();
+        } else {
+          els.uploadFileName.textContent = clean(payload.uploadFileName) || "Existing uploaded file";
+          els.previewFrame.src = "";
+          els.previewText.textContent = "Existing uploaded file loaded.";
+        }
+
+        if(clean(payload.mode) === "mass"){
+          setMode("mass");
+          els.massType.value = clean(payload.massType) || "team";
+          updateMassTypeUI();
+          const selected = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
+          Array.from(els.multiPlayers.options).forEach(opt => {
+            opt.selected = selected.includes(clean(opt.value));
+          });
+        } else {
+          setMode("single");
+          els.playerSelect.value = clean(payload.playerId);
+        }
+
+        setStatus("Film loaded for edit.", "success");
+      }
+    });
+
+    renderHeader();
+    renderTeams();
+    renderPlayers();
+    renderFilms();
+    setMode("single");
+    setVideoMode("link");
+  </script>
+</body>
+</html>

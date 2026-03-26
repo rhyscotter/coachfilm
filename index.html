@@ -7,15 +7,19 @@
   <style>
     :root{
       --bg:#0a0a0a;
+      --bg2:#111111;
+
       --panel:rgba(17,17,17,.90);
       --panel2:rgba(255,255,255,.04);
       --border:rgba(255,255,255,.10);
-      --text:#fff;
+
+      --text:#ffffff;
       --muted:rgba(255,255,255,.66);
 
       --accent:#7B2EFF;
       --accent2:#B266FF;
       --clubGlow:rgba(123,46,255,.18);
+      --nav:#111111;
 
       --ok:#22c55e;
       --warn:#f59e0b;
@@ -27,6 +31,7 @@
     }
 
     *{box-sizing:border-box}
+
     html,body{
       margin:0;
       padding:0;
@@ -40,7 +45,7 @@
       background:
         radial-gradient(circle at top left, var(--clubGlow), transparent 30%),
         radial-gradient(circle at bottom right, rgba(255,255,255,.04), transparent 24%),
-        linear-gradient(180deg,#080808 0%, #111 100%);
+        linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
       overflow-x:hidden;
     }
 
@@ -89,12 +94,13 @@
       gap:8px;
       padding:8px 14px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.08);
+      border:1px solid var(--border);
       background:rgba(255,255,255,.05);
       font-size:12px;
       font-weight:800;
       letter-spacing:.12em;
       text-transform:uppercase;
+      color:var(--text);
     }
 
     .eyebrow .dot{
@@ -112,6 +118,7 @@
       line-height:.94;
       letter-spacing:.03em;
       text-transform:uppercase;
+      color:var(--text);
     }
 
     .subtitle{
@@ -133,7 +140,7 @@
       border-radius:999px;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
-      color:#fff;
+      color:var(--text);
       font-size:12px;
       font-weight:800;
       letter-spacing:.08em;
@@ -168,7 +175,9 @@
     .card:before{
       content:"";
       position:absolute;
-      left:0; right:0; top:0;
+      left:0;
+      right:0;
+      top:0;
       height:1px;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
     }
@@ -182,6 +191,7 @@
       font-size:30px;
       letter-spacing:.04em;
       text-transform:uppercase;
+      color:var(--text);
     }
 
     .section-title:after{
@@ -197,7 +207,13 @@
     }
 
     .card:hover .section-title:after{width:116px}
-    .muted{color:var(--muted)}
+
+    .muted,
+    .film-meta,
+    .upload-note,
+    .stat-label{
+      color:var(--muted);
+    }
 
     .form-grid{
       display:grid;
@@ -215,7 +231,7 @@
     label{
       display:block;
       margin:0 0 8px;
-      color:#fff;
+      color:var(--text);
       font-size:12px;
       font-weight:800;
       letter-spacing:.1em;
@@ -224,9 +240,9 @@
 
     input, select, textarea{
       width:100%;
-      border:1px solid rgba(255,255,255,.10);
+      border:1px solid var(--border);
       background:var(--panel2);
-      color:#fff;
+      color:var(--text);
       border-radius:18px;
       padding:14px 14px;
       font-size:14px;
@@ -240,6 +256,11 @@
     textarea{
       min-height:120px;
       resize:vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder{
+      color:var(--muted);
     }
 
     input:focus, select:focus, textarea:focus{
@@ -258,7 +279,7 @@
       appearance:none;
       border:1px solid var(--border);
       background:rgba(255,255,255,.04);
-      color:#fff;
+      color:var(--text);
       border-radius:999px;
       padding:12px 16px;
       font-size:12px;
@@ -273,6 +294,7 @@
       border-color:transparent;
       background:linear-gradient(90deg,var(--accent),var(--accent2));
       box-shadow:0 10px 30px var(--clubGlow);
+      color:#fff;
     }
 
     .upload-box{
@@ -289,7 +311,6 @@
 
     .upload-note{
       margin-top:10px;
-      color:var(--muted);
       font-size:13px;
       line-height:1.55;
       word-break:break-word;
@@ -324,7 +345,7 @@
     }
 
     .btn-secondary{
-      color:#fff;
+      color:var(--text);
       background:rgba(255,255,255,.06);
       border:1px solid var(--border);
     }
@@ -358,21 +379,13 @@
       padding:16px;
     }
 
-    .stat-label{
-      font-size:11px;
-      letter-spacing:.1em;
-      text-transform:uppercase;
-      color:var(--muted);
-      font-weight:800;
-      margin-bottom:8px;
-    }
-
     .stat-value{
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
       font-size:34px;
       line-height:1;
       letter-spacing:.03em;
       text-transform:uppercase;
+      color:var(--text);
     }
 
     .list{
@@ -392,13 +405,7 @@
       font-size:18px;
       font-weight:900;
       letter-spacing:.01em;
-    }
-
-    .film-meta{
-      margin-top:6px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.55;
+      color:var(--text);
     }
 
     .tag-row{
@@ -417,6 +424,7 @@
       text-transform:uppercase;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
+      color:var(--text);
     }
 
     .film-actions{
@@ -437,7 +445,7 @@
       text-transform:uppercase;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
-      color:#fff;
+      color:var(--text);
     }
 
     .helper{
@@ -482,7 +490,7 @@
         <div class="hero-pills">
           <div class="pill" id="clubPill">Club</div>
           <div class="pill" id="coachPill">Coach</div>
-         
+          <div class="pill">Film Hub</div>
         </div>
       </div>
     </section>
@@ -517,7 +525,7 @@
 
               <div class="full" id="linkWrap">
                 <label for="filmUrl">Video URL</label>
-                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4 video link"/>
+                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4, or Wix-hosted video link"/>
               </div>
 
               <div class="full hidden" id="uploadWrap">
@@ -565,7 +573,7 @@
             <div class="status" id="statusText">Ready.</div>
 
             <div class="helper">
-             
+              This version supports both pasted links and uploaded files. Uploaded files are converted to file data and sent back to your Wix page code through postMessage.
             </div>
           </div>
         </div>
@@ -606,7 +614,7 @@
         <div class="card">
           <div class="card-inner">
             <h2 class="section-title">Preview</h2>
-            <div class="muted">Preview pasted links here.</div>
+            <div class="muted">Preview pasted links here. Uploaded files show filename until Wix saves and returns a playable URL.</div>
 
             <div style="margin-top:16px;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:#000;">
               <iframe
@@ -684,14 +692,49 @@
       els.statusText.textContent = text || "";
     }
 
+    function isLightColor(hex){
+      const value = clean(hex).replace("#", "");
+      if (value.length !== 6) return true;
+      const r = parseInt(value.substring(0,2), 16);
+      const g = parseInt(value.substring(2,4), 16);
+      const b = parseInt(value.substring(4,6), 16);
+      const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      return brightness > 150;
+    }
+
     function applyTheme(payload = {}){
       const accent = clean(payload.accent) || "#7B2EFF";
       const accent2 = clean(payload.accent2) || "#B266FF";
       const glow = clean(payload.clubGlow) || "rgba(123,46,255,.18)";
+      const text = clean(payload.text) || "#FFFFFF";
+      const nav = clean(payload.nav) || "#111111";
 
       document.documentElement.style.setProperty("--accent", accent);
       document.documentElement.style.setProperty("--accent2", accent2);
       document.documentElement.style.setProperty("--clubGlow", glow);
+      document.documentElement.style.setProperty("--text", text);
+      document.documentElement.style.setProperty("--nav", nav);
+
+      const lightNav = isLightColor(nav);
+      const lightText = isLightColor(text);
+
+      document.documentElement.style.setProperty("--bg", nav);
+      document.documentElement.style.setProperty("--bg2", nav);
+
+      if (lightNav) {
+        document.documentElement.style.setProperty("--panel", "rgba(255,255,255,.72)");
+        document.documentElement.style.setProperty("--panel2", "rgba(0,0,0,.04)");
+        document.documentElement.style.setProperty("--border", "rgba(0,0,0,.10)");
+      } else {
+        document.documentElement.style.setProperty("--panel", "rgba(17,17,17,.90)");
+        document.documentElement.style.setProperty("--panel2", "rgba(255,255,255,.04)");
+        document.documentElement.style.setProperty("--border", "rgba(255,255,255,.10)");
+      }
+
+      document.documentElement.style.setProperty(
+        "--muted",
+        lightText ? "rgba(255,255,255,.66)" : "rgba(0,0,0,.62)"
+      );
     }
 
     function renderHeader(){

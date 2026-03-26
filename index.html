@@ -543,7 +543,8 @@
     uploadedFileBase64: "",
     uploadedFileMimeType: "",
     uploadedFileName: "",
-    selectedTeamId: ""
+    selectedTeamId: "",
+    editingFilmId: ""
   };
 
   const $ = (id) => document.getElementById(id);
@@ -643,7 +644,7 @@
     });
   }
 
-  function renderPlayers(){
+  function renderPlayers(selectedSingleId = "", selectedMultiIds = []){
     const filtered = getPlayersForSelectedTeam();
 
     const singleOptions = ['<option value="">Select player</option>']
@@ -660,6 +661,17 @@
       return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
     });
     els.multiPlayers.innerHTML = multiOptions.join("");
+
+    if (selectedSingleId) {
+      els.playerSelect.value = clean(selectedSingleId);
+    }
+
+    if (Array.isArray(selectedMultiIds) && selectedMultiIds.length) {
+      const set = new Set(selectedMultiIds.map(clean));
+      Array.from(els.multiPlayers.options).forEach(opt => {
+        opt.selected = set.has(clean(opt.value));
+      });
+    }
   }
 
   function setMode(mode){
@@ -750,14 +762,15 @@
   function buildPayload(action){
     return {
       action,
+      id: state.editingFilmId,
       mode: state.mode,
       videoMode: state.videoMode,
       title: clean(els.filmTitle.value),
       notes: clean(els.filmNotes.value),
       videoUrl: state.videoMode === "link" ? clean(els.filmUrl.value) : "",
-      uploadFileName: state.videoMode === "upload" ? clean(state.uploadedFileName) : "",
       uploadFileType: state.videoMode === "upload" ? clean(state.uploadedFileMimeType) : "",
       uploadBase64: state.videoMode === "upload" ? state.uploadedFileBase64 : "",
+      uploadFileName: state.videoMode === "upload" ? clean(state.uploadedFileName) : "",
       teamId: clean(els.teamSelect.value || state.selectedTeamId),
       playerId: clean(els.playerSelect.value),
       massType: clean(els.massType.value),
@@ -769,7 +782,7 @@
   function validatePayload(payload){
     if(!payload.title) return "Add a film title.";
     if(payload.videoMode === "link" && !payload.videoUrl) return "Add a video URL.";
-    if(payload.videoMode === "upload" && !payload.uploadBase64) return "Choose a file to upload.";
+    if(payload.videoMode === "upload" && !payload.uploadBase64 && !state.editingFilmId) return "Choose a file to upload.";
     if(!payload.teamId) return "Select a team.";
     if(state.mode === "single" && !payload.playerId) return "Select a player.";
     if(state.mode === "mass" && payload.massType === "custom" && !payload.playerIds.length) return "Select at least one player.";
@@ -777,6 +790,7 @@
   }
 
   function clearForm(){
+    state.editingFilmId = "";
     els.filmTitle.value = "";
     els.filmNotes.value = "";
     els.filmUrl.value = "";
@@ -796,6 +810,8 @@
     els.uploadFileName.textContent = "No file selected yet.";
     updateMassTypeUI();
     updatePreview();
+    setMode("single");
+    setVideoMode("link");
     setStatus("Cleared.", "success");
   }
 
@@ -823,6 +839,7 @@
       const videoType = clean(item.videoMode || "link");
       const created = clean(item.createdDate || item.createdAt || "");
       const formattedDate = created ? new Date(created).toLocaleString() : "";
+      const watched = !!item.watched;
 
       div.innerHTML = `
         <div class="filmTitle">${escapeHtml(title)}</div>
@@ -834,6 +851,7 @@
         <div class="tagRow">
           <div class="tag">${escapeHtml(mode === "mass" ? "Mass Send" : "Single Send")}</div>
           <div class="tag">${escapeHtml(videoType === "upload" ? "Uploaded File" : "Video Link")}</div>
+          <div class="tag">${watched ? "Watched" : "Unwatched"}</div>
         </div>
         ${notes ? `<div class="filmMeta">${escapeHtml(notes)}</div>` : ""}
         <div class="filmActions">
@@ -922,6 +940,16 @@
     const error = validatePayload(payload);
     if(error){ setStatus(error, "error"); return; }
 
+    if (state.editingFilmId) {
+      if(state.videoMode === "upload" && payload.uploadBase64){
+        setStatus("Uploading and updating film...", "warn");
+      } else {
+        setStatus("Updating film...", "warn");
+      }
+      postToWix("UPDATE_EXISTING_FILM", payload);
+      return;
+    }
+
     if(state.videoMode === "upload"){
       setStatus("Uploading and sending film...", "warn");
       postToWix("UPLOAD_AND_SEND_FILM", payload);
@@ -935,6 +963,17 @@
     const payload = buildPayload("saveDraft");
     const error = validatePayload(payload);
     if(error){ setStatus(error, "error"); return; }
+
+    if (state.editingFilmId) {
+      payload.status = "draft";
+      if(state.videoMode === "upload" && payload.uploadBase64){
+        setStatus("Uploading and updating draft...", "warn");
+      } else {
+        setStatus("Updating draft...", "warn");
+      }
+      postToWix("UPDATE_EXISTING_FILM", payload);
+      return;
+    }
 
     if(state.videoMode === "upload"){
       setStatus("Uploading and saving draft...", "warn");
@@ -1020,13 +1059,16 @@
 
     if(type === "FILM_SAVED_OK"){
       setStatus(clean(payload.message) || "Film saved successfully.", "success");
+      state.editingFilmId = "";
     }
 
     if(type === "FILM_DELETED_OK"){
       setStatus(clean(payload.message) || "Film deleted.", "success");
+      if (state.editingFilmId) state.editingFilmId = "";
     }
 
     if(type === "LOAD_FILM_FOR_EDIT"){
+      state.editingFilmId = clean(payload.id);
       els.filmTitle.value = clean(payload.title);
       els.filmNotes.value = clean(payload.notes);
 
@@ -1034,37 +1076,47 @@
       state.selectedTeamId = editTeamId;
       els.teamSelect.value = editTeamId;
 
-      postToWix("LOAD_TEAM_PLAYERS", { teamId: editTeamId });
-
       const incomingVideoMode = clean(payload.videoMode || "link");
+      const incomingMode = clean(payload.mode || "single");
+      const incomingMassType = clean(payload.massType || "team");
+      const selectedSingleId = clean(payload.playerId);
+      const selectedMultiIds = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
+
+      if (incomingMode === "mass") {
+        setMode("mass");
+        els.massType.value = incomingMassType;
+        updateMassTypeUI();
+      } else {
+        setMode("single");
+      }
+
       setVideoMode(incomingVideoMode);
 
       if(incomingVideoMode === "link"){
         els.filmUrl.value = clean(payload.videoUrl);
+        state.uploadedFile = null;
+        state.uploadedFileBase64 = "";
+        state.uploadedFileMimeType = "";
+        state.uploadedFileName = "";
+        els.uploadFileName.textContent = "No file selected yet.";
         updatePreview();
       }else{
+        els.filmUrl.value = "";
         state.uploadedFile = null;
         state.uploadedFileBase64 = "";
         state.uploadedFileMimeType = clean(payload.uploadFileType);
-        state.uploadedFileName = clean(payload.uploadFileName);
-        els.uploadFileName.textContent = clean(payload.uploadFileName) || "Existing uploaded file";
+        state.uploadedFileName = "";
+        els.uploadFileName.textContent = "Existing uploaded file";
         els.previewFrame.src = "";
-        els.previewText.textContent = "Existing uploaded file loaded.";
+        els.previewText.textContent = "Existing uploaded file loaded. Choose a new file only if you want to replace it.";
       }
 
-      setTimeout(() => {
-        if(clean(payload.mode) === "mass"){
-          setMode("mass");
-          els.massType.value = clean(payload.massType) || "team";
-          updateMassTypeUI();
+      postToWix("LOAD_TEAM_PLAYERS", { teamId: editTeamId });
 
-          const selected = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
-          Array.from(els.multiPlayers.options).forEach(opt => {
-            opt.selected = selected.includes(clean(opt.value));
-          });
-        }else{
-          setMode("single");
-          els.playerSelect.value = clean(payload.playerId);
+      setTimeout(() => {
+        renderPlayers(selectedSingleId, selectedMultiIds);
+        if (incomingMode === "single") {
+          els.playerSelect.value = selectedSingleId;
         }
       }, 250);
 

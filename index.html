@@ -249,8 +249,6 @@
   .miniBtn:hover::after{
     transform:scaleX(1);
   }
-
-  /* STRONGER SELECTED STATE */
   .segBtn.active{
     border-color:rgba(255,255,255,.38);
     background:
@@ -309,6 +307,36 @@
   }
   select[multiple]{
     min-height:150px;
+  }
+
+  .videoChoiceGrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+  }
+  @media (max-width:760px){
+    .videoChoiceGrid{grid-template-columns:1fr}
+  }
+
+  .choiceCard{
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.03);
+    border-radius:16px;
+    padding:14px;
+    min-height:150px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.03), 0 0 18px rgba(0,0,0,.12);
+    transition:.16s ease;
+  }
+  .choiceCard.selected{
+    border-color:rgba(255,255,255,.28);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.06),
+      0 0 34px var(--clubGlow),
+      inset 0 0 18px rgba(255,255,255,.03);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02)),
+      rgba(255,255,255,.04);
   }
 
   .uploadShell{
@@ -492,11 +520,6 @@
               <button class="segBtn" data-mode="mass" type="button">Mass Send</button>
             </div>
 
-            <div class="segRow" id="videoMode">
-              <button class="segBtn active" data-video-mode="link" type="button">Paste Link</button>
-              <button class="segBtn" data-video-mode="upload" type="button">Upload File</button>
-            </div>
-
             <div class="formGrid">
               <div class="full">
                 <div class="fieldLabel">Film Title</div>
@@ -508,26 +531,30 @@
                 <textarea id="filmNotes" placeholder="Write what you want the player or players to focus on..."></textarea>
               </div>
 
-              <div class="full" id="linkWrap">
-                <div class="fieldLabel">Video URL</div>
-                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4, or Wix-hosted video link"/>
-              </div>
-
-              <div class="full hidden" id="uploadWrap">
-                <div class="fieldLabel">Upload Video</div>
-
-                <div class="uploadShell">
-                  <div class="uploadInner">
-                    <div class="uploadIcon">⬆</div>
-                    <div class="uploadText">Upload Video</div>
-                    <div class="uploadSub">Use the Wix upload button in the rectangle below</div>
+              <div class="full">
+                <div class="videoChoiceGrid">
+                  <div class="choiceCard selected" id="linkCard">
+                    <div class="fieldLabel">Paste Link</div>
+                    <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4, or Wix-hosted video link"/>
+                    <div class="tiny">Use this if your film already has a hosted link.</div>
                   </div>
 
-                  <div class="uploadSlot" id="uploadSlot">
-                    <div class="uploadSlotText" id="uploadSlotText">Upload button area</div>
-                  </div>
+                  <div class="choiceCard" id="uploadCard">
+                    <div class="fieldLabel">Upload Video</div>
+                    <div class="uploadShell">
+                      <div class="uploadInner">
+                        <div class="uploadIcon">⬆</div>
+                        <div class="uploadText">Upload Video</div>
+                        <div class="uploadSub">Use the Wix upload button in the rectangle below</div>
+                      </div>
 
-                  <div class="tiny" id="uploadHint">No file selected yet.</div>
+                      <div class="uploadSlot" id="uploadSlot">
+                        <div class="uploadSlotText" id="uploadSlotText">Upload button area</div>
+                      </div>
+
+                      <div class="tiny" id="uploadHint">No file selected yet.</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -559,6 +586,12 @@
               </div>
             </div>
 
+            <div class="h2" style="margin-top:18px">Video Preview</div>
+            <div style="margin-top:12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;background:#000;">
+              <iframe id="previewFrame" src="" title="Film Preview" style="width:100%;height:280px;border:0;background:#000;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="tiny" id="previewText">Paste a supported video link to preview it here. Uploaded videos will show as ready after Wix upload.</div>
+
             <div class="actions" style="margin-top:14px">
               <button class="actionBtn" id="sendBtn" type="button">Send Film</button>
               <button class="actionBtn" id="saveDraftBtn" type="button">Save Draft</button>
@@ -583,12 +616,6 @@
                 <div class="countLbl">Mass Sends</div>
               </div>
             </div>
-
-            <div class="h2" style="margin-top:18px">Preview</div>
-            <div style="margin-top:12px;border:1px solid rgba(255,255,255,.10);border-radius:14px;overflow:hidden;background:#000;">
-              <iframe id="previewFrame" src="" title="Film Preview" style="width:100%;height:280px;border:0;background:#000;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="tiny" id="previewText">Paste a supported video link to preview it here.</div>
           </div>
         </div>
       </div>
@@ -637,10 +664,10 @@
     filmTitle: $("filmTitle"),
     filmUrl: $("filmUrl"),
     filmNotes: $("filmNotes"),
-    linkWrap: $("linkWrap"),
-    uploadWrap: $("uploadWrap"),
     uploadHint: $("uploadHint"),
     uploadSlotText: $("uploadSlotText"),
+    linkCard: $("linkCard"),
+    uploadCard: $("uploadCard"),
     sendBtn: $("sendBtn"),
     saveDraftBtn: $("saveDraftBtn"),
     clearBtn: $("clearBtn"),
@@ -649,8 +676,7 @@
     emptyState: $("emptyState"),
     previewFrame: $("previewFrame"),
     previewText: $("previewText"),
-    assignMode: $("assignMode"),
-    videoMode: $("videoMode")
+    assignMode: $("assignMode")
   };
 
   function clean(v){ return String(v || "").trim(); }
@@ -761,20 +787,14 @@
 
   function setVideoMode(mode){
     state.videoMode = mode === "upload" ? "upload" : "link";
+    els.linkCard.classList.toggle("selected", state.videoMode === "link");
+    els.uploadCard.classList.toggle("selected", state.videoMode === "upload");
 
-    Array.from(els.videoMode.querySelectorAll(".segBtn")).forEach(btn => {
-      btn.classList.toggle("active", btn.dataset.videoMode === state.videoMode);
-    });
-
-    const isUpload = state.videoMode === "upload";
-    els.linkWrap.classList.toggle("hidden", isUpload);
-    els.uploadWrap.classList.toggle("hidden", !isUpload);
-
-    if(isUpload){
+    if(state.videoMode === "upload"){
       els.previewFrame.src = "";
       els.previewText.textContent = state.uploadedVideoLabel
         ? "Uploaded video selected from Wix."
-        : "Use the Wix upload button in the rectangle below.";
+        : "Use the Wix upload button in the rectangle on the right.";
     } else {
       updatePreview();
     }
@@ -941,10 +961,12 @@
     setMode(btn.dataset.mode);
   });
 
-  els.videoMode.addEventListener("click", (e) => {
-    const btn = e.target.closest(".segBtn");
-    if(!btn) return;
-    setVideoMode(btn.dataset.videoMode);
+  els.linkCard.addEventListener("click", () => {
+    setVideoMode("link");
+  });
+
+  els.uploadCard.addEventListener("click", () => {
+    setVideoMode("upload");
   });
 
   els.teamSelect.addEventListener("change", () => {
@@ -957,7 +979,15 @@
   });
 
   els.massType.addEventListener("change", updateMassTypeUI);
-  els.filmUrl.addEventListener("input", updatePreview);
+
+  els.filmUrl.addEventListener("focus", () => {
+    setVideoMode("link");
+  });
+
+  els.filmUrl.addEventListener("input", () => {
+    setVideoMode("link");
+    updatePreview();
+  });
 
   els.sendBtn.addEventListener("click", () => {
     const payload = buildPayload("sendFilm");
@@ -1135,9 +1165,8 @@
       state.uploadedVideoLabel = clean(payload.fileName || "Uploaded video");
       els.uploadHint.textContent = state.uploadedVideoLabel ? `Selected: ${state.uploadedVideoLabel}` : "Video uploaded.";
       els.uploadSlotText.textContent = "Upload complete";
-      if(state.videoMode === "upload"){
-        els.previewText.textContent = "Uploaded video ready.";
-      }
+      setVideoMode("upload");
+      els.previewText.textContent = "Uploaded video ready.";
       setStatus("Upload ready.", "success");
     }
 

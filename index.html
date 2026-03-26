@@ -542,7 +542,8 @@
     uploadedFile: null,
     uploadedFileBase64: "",
     uploadedFileMimeType: "",
-    uploadedFileName: ""
+    uploadedFileName: "",
+    selectedTeamId: ""
   };
 
   const $ = (id) => document.getElementById(id);
@@ -612,18 +613,29 @@
       .replaceAll("'", "&#39;");
   }
 
-  function renderTeams(){
+  function renderTeams(preserveSelection = true){
+    const previous = preserveSelection ? (state.selectedTeamId || clean(els.teamSelect.value)) : "";
+
     const options = ['<option value="">Select team</option>']
       .concat(state.teams.map(team => {
         const id = clean(team.id || team._id);
         const name = clean(team.name || team.title || team.teamName);
         return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
       }));
+
     els.teamSelect.innerHTML = options.join("");
+
+    if (previous) {
+      const exists = state.teams.some(team => clean(team.id || team._id) === previous);
+      if (exists) {
+        els.teamSelect.value = previous;
+        state.selectedTeamId = previous;
+      }
+    }
   }
 
   function getPlayersForSelectedTeam(){
-    const teamId = clean(els.teamSelect.value);
+    const teamId = clean(els.teamSelect.value || state.selectedTeamId);
     if(!teamId) return [];
     return state.players.filter(player => {
       const teamIds = Array.isArray(player.teamIds) ? player.teamIds.map(clean) : [];
@@ -746,7 +758,7 @@
       uploadFileName: state.videoMode === "upload" ? clean(state.uploadedFileName) : "",
       uploadFileType: state.videoMode === "upload" ? clean(state.uploadedFileMimeType) : "",
       uploadBase64: state.videoMode === "upload" ? state.uploadedFileBase64 : "",
-      teamId: clean(els.teamSelect.value),
+      teamId: clean(els.teamSelect.value || state.selectedTeamId),
       playerId: clean(els.playerSelect.value),
       massType: clean(els.massType.value),
       playerIds: getSelectedMultiPlayers(),
@@ -769,6 +781,7 @@
     els.filmNotes.value = "";
     els.filmUrl.value = "";
     els.teamSelect.value = "";
+    state.selectedTeamId = "";
     els.playerSelect.innerHTML = '<option value="">Select player</option>';
     els.multiPlayers.innerHTML = '';
     els.massType.value = "team";
@@ -860,6 +873,7 @@
 
   els.teamSelect.addEventListener("change", () => {
     const teamId = clean(els.teamSelect.value);
+    state.selectedTeamId = teamId;
     state.players = [];
     els.playerSelect.innerHTML = '<option value="">Loading players...</option>';
     els.multiPlayers.innerHTML = '';
@@ -972,7 +986,7 @@
       state.recentFilms = Array.isArray(payload.recentFilms) ? payload.recentFilms : [];
       applyTheme(payload.theme || payload);
       renderHeader();
-      renderTeams();
+      renderTeams(false);
       renderPlayers();
       renderFilms();
       setStatus("Film room ready.", "success");
@@ -983,12 +997,21 @@
     }
 
     if(type === "FILM_ROOM_DATA"){
-      if(Array.isArray(payload.teams)) state.teams = payload.teams;
-      if(Array.isArray(payload.players)) state.players = payload.players;
-      if(Array.isArray(payload.recentFilms)) state.recentFilms = payload.recentFilms;
-      renderTeams();
-      renderPlayers();
-      renderFilms();
+      const hadTeams = Array.isArray(payload.teams);
+      const hadPlayers = Array.isArray(payload.players);
+      const hadRecentFilms = Array.isArray(payload.recentFilms);
+
+      if(hadTeams) state.teams = payload.teams;
+      if(hadPlayers) state.players = payload.players;
+      if(hadRecentFilms) state.recentFilms = payload.recentFilms;
+
+      if(hadTeams) renderTeams(true);
+      if(hadPlayers) renderPlayers();
+      if(hadRecentFilms) renderFilms();
+
+      if(hadPlayers && !state.players.length && state.selectedTeamId){
+        setStatus("No players found for that team.", "warn");
+      }
     }
 
     if(type === "FILM_ROOM_STATUS"){
@@ -1006,9 +1029,12 @@
     if(type === "LOAD_FILM_FOR_EDIT"){
       els.filmTitle.value = clean(payload.title);
       els.filmNotes.value = clean(payload.notes);
-      els.teamSelect.value = clean(payload.teamId);
 
-      postToWix("LOAD_TEAM_PLAYERS", { teamId: clean(payload.teamId) });
+      const editTeamId = clean(payload.teamId);
+      state.selectedTeamId = editTeamId;
+      els.teamSelect.value = editTeamId;
+
+      postToWix("LOAD_TEAM_PLAYERS", { teamId: editTeamId });
 
       const incomingVideoMode = clean(payload.videoMode || "link");
       setVideoMode(incomingVideoMode);
@@ -1047,7 +1073,7 @@
   });
 
   renderHeader();
-  renderTeams();
+  renderTeams(false);
   renderPlayers();
   renderFilms();
   setMode("single");

@@ -8,11 +8,9 @@
     :root{
       --bg:#0a0a0a;
       --bg2:#111111;
-
       --panel:rgba(17,17,17,.90);
       --panel2:rgba(255,255,255,.04);
       --border:rgba(255,255,255,.10);
-
       --text:#ffffff;
       --muted:rgba(255,255,255,.66);
 
@@ -30,7 +28,6 @@
     }
 
     *{box-sizing:border-box}
-
     html,body{
       margin:0;
       padding:0;
@@ -61,411 +58,143 @@
       mask-image:linear-gradient(to bottom, rgba(0,0,0,.8), transparent 92%);
     }
 
-    .wrap{
-      position:relative;
-      z-index:1;
-      max-width:var(--max);
-      margin:0 auto;
-      padding:28px 20px 48px;
-    }
-
+    .wrap{position:relative;z-index:1;max-width:var(--max);margin:0 auto;padding:28px 20px 48px}
     .hero{
-      border:1px solid var(--border);
-      border-radius:32px;
-      padding:24px;
+      border:1px solid var(--border);border-radius:32px;padding:24px;
       background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
-      backdrop-filter:blur(10px);
-      box-shadow:var(--shadow);
-      margin-bottom:20px;
+      backdrop-filter:blur(10px);box-shadow:var(--shadow);margin-bottom:20px;
     }
-
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-
+    .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
     .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 14px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      color:var(--text);
+      display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+      border:1px solid var(--border);background:rgba(255,255,255,.05);
+      font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#fff;
     }
-
     .eyebrow .dot{
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 0 18px var(--accent);
+      width:8px;height:8px;border-radius:50%;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 18px var(--accent);
     }
 
     .title{
-      margin:14px 0 8px;
-      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      font-size:clamp(42px,7vw,88px);
-      line-height:.94;
-      letter-spacing:.03em;
-      text-transform:uppercase;
-      color:#fff;
+      margin:14px 0 8px;font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:clamp(42px,7vw,88px);line-height:.94;letter-spacing:.03em;text-transform:uppercase;color:#fff;
     }
-
-    .subtitle{
-      max-width:760px;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.65;
-    }
-
-    .hero-pills{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
+    .subtitle{max-width:760px;color:var(--muted);font-size:15px;line-height:1.65}
+    .hero-pills{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .pill{
-      padding:11px 16px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      color:#fff;
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      white-space:nowrap;
+      padding:11px 16px;border-radius:999px;border:1px solid var(--border);
+      background:rgba(255,255,255,.05);color:#fff;font-size:12px;font-weight:800;
+      letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;
     }
 
-    .layout{
-      display:grid;
-      grid-template-columns:1.12fr .88fr;
-      gap:18px;
-    }
-
-    @media (max-width:1100px){
-      .layout{grid-template-columns:1fr}
-    }
-
-    .stack{
-      display:grid;
-      gap:18px;
-    }
+    .layout{display:grid;grid-template-columns:1.12fr .88fr;gap:18px}
+    @media (max-width:1100px){.layout{grid-template-columns:1fr}}
+    .stack{display:grid;gap:18px}
 
     .card{
-      position:relative;
-      overflow:hidden;
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      background:var(--panel);
-      box-shadow:var(--shadow);
+      position:relative;overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);
+      background:var(--panel);box-shadow:var(--shadow);
     }
-
     .card:before{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      top:0;
-      height:1px;
+      content:"";position:absolute;left:0;right:0;top:0;height:1px;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
     }
-
     .card-inner{padding:22px}
 
     .section-title{
-      display:inline-block;
-      margin:0 0 6px;
-      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      font-size:30px;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      color:#fff;
+      display:inline-block;margin:0 0 6px;font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:30px;letter-spacing:.04em;text-transform:uppercase;color:#fff;
     }
-
     .section-title:after{
-      content:"";
-      display:block;
-      width:74px;
-      height:3px;
-      border-radius:999px;
-      margin-top:8px;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 0 16px var(--accent);
-      transition:width .22s ease;
+      content:"";display:block;width:74px;height:3px;border-radius:999px;margin-top:8px;
+      background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 16px var(--accent);transition:width .22s ease;
     }
-
     .card:hover .section-title:after{width:116px}
 
-    .muted,
-    .film-meta,
-    .upload-note,
-    .stat-label{
-      color:var(--muted);
-    }
+    .muted,.film-meta,.upload-note,.stat-label{color:var(--muted)}
 
-    .form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-      margin-top:16px;
-    }
-
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
     .form-grid .full{grid-column:1 / -1}
-
-    @media (max-width:760px){
-      .form-grid{grid-template-columns:1fr}
-    }
+    @media (max-width:760px){.form-grid{grid-template-columns:1fr}}
 
     label{
-      display:block;
-      margin:0 0 8px;
-      color:#fff;
-      font-size:12px;
-      font-weight:800;
-      letter-spacing:.1em;
-      text-transform:uppercase;
+      display:block;margin:0 0 8px;color:#fff;font-size:12px;font-weight:800;
+      letter-spacing:.1em;text-transform:uppercase;
     }
 
-    input, select, textarea{
-      width:100%;
-      border:1px solid var(--border);
-      background:var(--panel2);
-      color:#fff;
-      border-radius:18px;
-      padding:14px 14px;
-      font-size:14px;
-      outline:none;
+    input,select,textarea{
+      width:100%;border:1px solid var(--border);background:var(--panel2);color:#fff;
+      border-radius:18px;padding:14px 14px;font-size:14px;outline:none;
+    }
+    select[multiple]{min-height:160px}
+    textarea{min-height:120px;resize:vertical}
+    input::placeholder,textarea::placeholder{color:var(--muted)}
+    input:focus,select:focus,textarea:focus{
+      border-color:rgba(255,255,255,.22);box-shadow:0 0 0 3px rgba(123,46,255,.16);
     }
 
-    select[multiple]{
-      min-height:160px;
-    }
-
-    textarea{
-      min-height:120px;
-      resize:vertical;
-    }
-
-    input::placeholder,
-    textarea::placeholder{
-      color:var(--muted);
-    }
-
-    input:focus, select:focus, textarea:focus{
-      border-color:rgba(255,255,255,.22);
-      box-shadow:0 0 0 3px rgba(123,46,255,.16);
-    }
-
-    .segmented{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
+    .segmented{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .seg-btn{
-      appearance:none;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      border-radius:999px;
-      padding:12px 16px;
-      font-size:12px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      cursor:pointer;
-      transition:.18s ease;
+      appearance:none;border:1px solid var(--border);background:rgba(255,255,255,.04);color:#fff;
+      border-radius:999px;padding:12px 16px;font-size:12px;font-weight:900;letter-spacing:.08em;
+      text-transform:uppercase;cursor:pointer;transition:.18s ease;
     }
-
     .seg-btn.active{
-      border-color:transparent;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 10px 30px var(--clubGlow);
-      color:#fff;
+      border-color:transparent;background:linear-gradient(90deg,var(--accent),var(--accent2));
+      box-shadow:0 10px 30px var(--clubGlow);color:#fff;
     }
 
     .upload-box{
-      border:1px dashed rgba(255,255,255,.18);
-      border-radius:22px;
-      background:rgba(255,255,255,.03);
-      padding:20px;
+      border:1px dashed rgba(255,255,255,.18);border-radius:22px;background:rgba(255,255,255,.03);padding:20px;
     }
+    .upload-box input[type="file"]{padding:12px;background:rgba(255,255,255,.02)}
+    .upload-note{margin-top:10px;font-size:13px;line-height:1.55;word-break:break-word}
 
-    .upload-box input[type="file"]{
-      padding:12px;
-      background:rgba(255,255,255,.02);
-    }
-
-    .upload-note{
-      margin-top:10px;
-      font-size:13px;
-      line-height:1.55;
-      word-break:break-word;
-    }
-
-    .actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
-
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
     .btn{
-      appearance:none;
-      border:none;
-      cursor:pointer;
-      padding:14px 18px;
-      border-radius:18px;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+      appearance:none;border:none;cursor:pointer;padding:14px 18px;border-radius:18px;font-size:13px;
+      font-weight:900;letter-spacing:.08em;text-transform:uppercase;transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
     }
-
     .btn:hover{transform:translateY(-1px)}
-
     .btn-primary{
-      color:#fff;
-      background:linear-gradient(90deg,var(--accent),var(--accent2));
-      box-shadow:0 12px 34px var(--clubGlow);
+      color:#fff;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 12px 34px var(--clubGlow);
     }
+    .btn-secondary{color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--border)}
 
-    .btn-secondary{
-      color:#fff;
-      background:rgba(255,255,255,.06);
-      border:1px solid var(--border);
-    }
-
-    .status{
-      margin-top:16px;
-      min-height:22px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
+    .status{margin-top:16px;min-height:22px;font-size:13px;color:var(--muted)}
     .status.success{color:var(--ok)}
     .status.warn{color:var(--warn)}
     .status.error{color:var(--danger)}
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:12px;
-      margin-top:16px;
-    }
-
-    @media (max-width:640px){
-      .stats{grid-template-columns:1fr}
-    }
-
-    .stat{
-      border:1px solid var(--border);
-      border-radius:20px;
-      background:rgba(255,255,255,.03);
-      padding:16px;
-    }
-
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    @media (max-width:640px){.stats{grid-template-columns:1fr}}
+    .stat{border:1px solid var(--border);border-radius:20px;background:rgba(255,255,255,.03);padding:16px}
     .stat-value{
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      font-size:34px;
-      line-height:1;
-      letter-spacing:.03em;
-      text-transform:uppercase;
-      color:#fff;
+      font-size:34px;line-height:1;letter-spacing:.03em;text-transform:uppercase;color:#fff;
     }
 
-    .list{
-      display:grid;
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .film-item{
-      border:1px solid var(--border);
-      border-radius:22px;
-      background:rgba(255,255,255,.03);
-      padding:16px;
-    }
-
-    .film-name{
-      font-size:18px;
-      font-weight:900;
-      letter-spacing:.01em;
-      color:#fff;
-    }
-
-    .tag-row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-
+    .list{display:grid;gap:12px;margin-top:16px}
+    .film-item{border:1px solid var(--border);border-radius:22px;background:rgba(255,255,255,.03);padding:16px}
+    .film-name{font-size:18px;font-weight:900;letter-spacing:.01em;color:#fff}
+    .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .tag{
-      padding:7px 10px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      color:#fff;
+      padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:.08em;
+      text-transform:uppercase;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#fff;
     }
-
-    .film-actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:14px;
-    }
-
+    .film-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
     .mini-btn{
-      appearance:none;
-      cursor:pointer;
-      border-radius:14px;
-      padding:10px 12px;
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.05);
-      color:#fff;
+      appearance:none;cursor:pointer;border-radius:14px;padding:10px 12px;font-size:11px;font-weight:900;
+      letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--border);background:rgba(255,255,255,.05);color:#fff;
     }
 
     .helper{
-      margin-top:12px;
-      padding:14px 16px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(255,255,255,.035);
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
+      margin-top:12px;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.035);color:var(--muted);font-size:13px;line-height:1.6;
     }
-
     .empty{
-      border:1px dashed rgba(255,255,255,.14);
-      border-radius:22px;
-      padding:24px;
-      text-align:center;
-      color:var(--muted);
-      background:rgba(255,255,255,.02);
-      margin-top:16px;
+      border:1px dashed rgba(255,255,255,.14);border-radius:22px;padding:24px;text-align:center;
+      color:var(--muted);background:rgba(255,255,255,.02);margin-top:16px;
     }
 
     .hidden{display:none !important}
@@ -481,9 +210,7 @@
             <span>All In One</span>
           </div>
           <h1 class="title">Coach Film Room</h1>
-          <div class="subtitle">
-            Send individual or mass film clips to players using either a pasted video link or an uploaded video file.
-          </div>
+          <div class="subtitle">Send individual or mass film clips to players using either a pasted video link or an uploaded video file.</div>
         </div>
 
         <div class="hero-pills">
@@ -588,7 +315,6 @@
           <div class="card-inner">
             <h2 class="section-title">Overview</h2>
             <div class="muted">Quick look at current film room activity.</div>
-
             <div class="stats">
               <div class="stat">
                 <div class="stat-label">Total Films</div>
@@ -610,21 +336,10 @@
           <div class="card-inner">
             <h2 class="section-title">Preview</h2>
             <div class="muted">Preview pasted links here. Uploaded files show filename until Wix saves and returns a playable URL.</div>
-
             <div style="margin-top:16px;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:#000;">
-              <iframe
-                id="previewFrame"
-                src=""
-                title="Film Preview"
-                style="width:100%;height:320px;border:0;background:#000;"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen
-              ></iframe>
+              <iframe id="previewFrame" src="" title="Film Preview" style="width:100%;height:320px;border:0;background:#000;" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
-
-            <div class="helper" id="previewText">
-              Paste a supported video link to preview it here.
-            </div>
+            <div class="helper" id="previewText">Paste a supported video link to preview it here.</div>
           </div>
         </div>
       </div>
@@ -693,14 +408,6 @@
       document.documentElement.style.setProperty("--accent", accent);
       document.documentElement.style.setProperty("--accent2", accent2);
       document.documentElement.style.setProperty("--clubGlow", glow);
-
-      document.documentElement.style.setProperty("--text", "#FFFFFF");
-      document.documentElement.style.setProperty("--muted", "rgba(255,255,255,.66)");
-      document.documentElement.style.setProperty("--bg", "#0a0a0a");
-      document.documentElement.style.setProperty("--bg2", "#111111");
-      document.documentElement.style.setProperty("--panel", "rgba(17,17,17,.90)");
-      document.documentElement.style.setProperty("--panel2", "rgba(255,255,255,.04)");
-      document.documentElement.style.setProperty("--border", "rgba(255,255,255,.10)");
     }
 
     function renderHeader(){
@@ -731,8 +438,8 @@
       const teamId = clean(els.teamSelect.value);
       if(!teamId) return [];
       return state.players.filter(player => {
-        const many = Array.isArray(player.teamIds) ? player.teamIds.map(clean) : [];
-        return many.includes(teamId);
+        const teamIds = Array.isArray(player.teamIds) ? player.teamIds.map(clean) : [];
+        return teamIds.includes(teamId);
       });
     }
 
@@ -742,14 +449,14 @@
       const singleOptions = ['<option value="">Select player</option>']
         .concat(filtered.map(player => {
           const id = clean(player.id || player._id || player.playerId);
-          const name = clean(player.name || player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
+          const name = clean(player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
           return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
         }));
       els.playerSelect.innerHTML = singleOptions.join("");
 
       const multiOptions = filtered.map(player => {
         const id = clean(player.id || player._id || player.playerId);
-        const name = clean(player.name || player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
+        const name = clean(player.fullName || player.title || [player.firstName, player.lastName].filter(Boolean).join(" "));
         return `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`;
       });
       els.multiPlayers.innerHTML = multiOptions.join("");
@@ -798,7 +505,6 @@
     function toEmbedUrl(url){
       const raw = clean(url);
       if(!raw) return "";
-
       if(raw.includes("youtube.com/watch?v=")){
         const id = raw.split("v=")[1]?.split("&")[0];
         return id ? `https://www.youtube.com/embed/${id}` : "";
@@ -812,7 +518,6 @@
         return id ? `https://player.vimeo.com/video/${id}` : "";
       }
       if(raw.endsWith(".mp4")) return raw;
-
       return raw;
     }
 
@@ -821,24 +526,19 @@
         els.previewFrame.src = "";
         return;
       }
-
       const url = clean(els.filmUrl.value);
       const embed = toEmbedUrl(url);
-
       if(!embed){
         els.previewFrame.src = "";
         els.previewText.textContent = "Paste a supported video link to preview it here.";
         return;
       }
-
       els.previewFrame.src = embed;
       els.previewText.textContent = "Preview loaded.";
     }
 
     function getSelectedMultiPlayers(){
-      return Array.from(els.multiPlayers.selectedOptions || [])
-        .map(opt => clean(opt.value))
-        .filter(Boolean);
+      return Array.from(els.multiPlayers.selectedOptions || []).map(opt => clean(opt.value)).filter(Boolean);
     }
 
     function postToWix(type, payload = {}){
@@ -871,15 +571,8 @@
       if(payload.videoMode === "link" && !payload.videoUrl) return "Add a video URL.";
       if(payload.videoMode === "upload" && !payload.uploadBase64) return "Choose a file to upload.";
       if(!payload.teamId) return "Select a team.";
-
-      if(state.mode === "single" && !payload.playerId){
-        return "Select a player.";
-      }
-
-      if(state.mode === "mass" && payload.massType === "custom" && !payload.playerIds.length){
-        return "Select at least one player.";
-      }
-
+      if(state.mode === "single" && !payload.playerId) return "Select a player.";
+      if(state.mode === "mass" && payload.massType === "custom" && !payload.playerIds.length) return "Select at least one player.";
       return "";
     }
 
@@ -890,9 +583,7 @@
       els.teamSelect.value = "";
       els.playerSelect.value = "";
       els.massType.value = "team";
-
-      Array.from(els.multiPlayers.options).forEach(opt => opt.selected = false);
-
+      Array.from(els.multiPlayers.options).forEach(opt => { opt.selected = false; });
       if(els.filmUpload) els.filmUpload.value = "";
 
       state.uploadedFile = null;
@@ -901,7 +592,6 @@
       state.uploadedFileName = "";
 
       els.uploadFileName.textContent = "No file selected yet.";
-
       renderPlayers();
       updateMassTypeUI();
       updatePreview();
@@ -940,21 +630,17 @@
             ${teamName ? `Team: ${escapeHtml(teamName)}<br/>` : ""}
             ${formattedDate ? `Created: ${escapeHtml(formattedDate)}` : ""}
           </div>
-
           <div class="tag-row">
             <div class="tag">${escapeHtml(mode === "mass" ? "Mass Send" : "Single Send")}</div>
             <div class="tag">${escapeHtml(videoType === "upload" ? "Uploaded File" : "Video Link")}</div>
           </div>
-
           ${notes ? `<div class="film-meta" style="margin-top:12px;">${escapeHtml(notes)}</div>` : ""}
-
           <div class="film-actions">
             <button class="mini-btn" type="button" data-action="preview" data-url="${escapeHtml(clean(item.videoUrl))}">Preview</button>
             <button class="mini-btn" type="button" data-action="edit" data-id="${escapeHtml(clean(item.id || item._id))}">Edit</button>
             <button class="mini-btn" type="button" data-action="delete" data-id="${escapeHtml(clean(item.id || item._id))}">Delete</button>
           </div>
         `;
-
         els.filmList.appendChild(div);
       });
     }
@@ -1003,7 +689,6 @@
 
       try{
         setStatus("Reading file...", "warn");
-
         const base64 = await fileToBase64(file);
 
         state.uploadedFileBase64 = base64;
@@ -1028,16 +713,12 @@
     els.sendBtn.addEventListener("click", () => {
       const payload = buildPayload("sendFilm");
       const error = validatePayload(payload);
-
-      if(error){
-        setStatus(error, "error");
-        return;
-      }
+      if(error){ setStatus(error, "error"); return; }
 
       if(state.videoMode === "upload"){
         setStatus("Uploading and sending film...", "warn");
         postToWix("UPLOAD_AND_SEND_FILM", payload);
-      }else{
+      } else {
         setStatus("Sending film...", "warn");
         postToWix("SEND_FILM", payload);
       }
@@ -1046,16 +727,12 @@
     els.saveDraftBtn.addEventListener("click", () => {
       const payload = buildPayload("saveDraft");
       const error = validatePayload(payload);
-
-      if(error){
-        setStatus(error, "error");
-        return;
-      }
+      if(error){ setStatus(error, "error"); return; }
 
       if(state.videoMode === "upload"){
         setStatus("Uploading and saving draft...", "warn");
         postToWix("UPLOAD_AND_SAVE_FILM_DRAFT", payload);
-      }else{
+      } else {
         setStatus("Saving draft...", "warn");
         postToWix("SAVE_FILM_DRAFT", payload);
       }
@@ -1068,7 +745,6 @@
       if(!btn) return;
 
       const action = btn.dataset.action;
-
       if(action === "preview"){
         const url = clean(btn.dataset.url);
         if(url){

@@ -13,7 +13,6 @@
     --text:#fff;
     --muted:rgba(255,255,255,.62);
 
-    /* only these get overridden by club theme */
     --accent:#7B2EFF;
     --accent2:#B266FF;
     --clubGlow:rgba(123,46,255,.18);
@@ -192,44 +191,6 @@
   }
   .panel:hover .h2::after{
     transform:scaleX(1);
-  }
-
-  .meta{
-    margin-top:12px;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-  @media (max-width:640px){
-    .meta{grid-template-columns:1fr}
-  }
-
-  .box{
-    border:1px solid rgba(255,255,255,.10);
-    background:rgba(255,255,255,.03);
-    border-radius:16px;
-    padding:12px;
-    transition:.16s ease;
-  }
-  .box:hover{
-    border-color:rgba(255,255,255,.16);
-    background:rgba(255,255,255,.06);
-    box-shadow:0 0 26px var(--clubGlow);
-    transform:translateY(-1px);
-  }
-  .label{
-    color:rgba(255,255,255,.62);
-    font-size:11px;
-    font-weight:900;
-    letter-spacing:.9px;
-    text-transform:uppercase;
-  }
-  .val{
-    margin-top:6px;
-    font-size:14px;
-    line-height:1.45;
-    color:rgba(255,255,255,.92);
-    word-break:break-word;
   }
 
   .segRow,
@@ -808,18 +769,18 @@
     els.filmNotes.value = "";
     els.filmUrl.value = "";
     els.teamSelect.value = "";
-    els.playerSelect.value = "";
+    els.playerSelect.innerHTML = '<option value="">Select player</option>';
+    els.multiPlayers.innerHTML = '';
     els.massType.value = "team";
-    Array.from(els.multiPlayers.options).forEach(opt => { opt.selected = false; });
     if(els.filmUpload) els.filmUpload.value = "";
 
+    state.players = [];
     state.uploadedFile = null;
     state.uploadedFileBase64 = "";
     state.uploadedFileMimeType = "";
     state.uploadedFileName = "";
 
     els.uploadFileName.textContent = "No file selected yet.";
-    renderPlayers();
     updateMassTypeUI();
     updatePreview();
     setStatus("Cleared.", "success");
@@ -897,7 +858,14 @@
     setVideoMode(btn.dataset.videoMode);
   });
 
-  els.teamSelect.addEventListener("change", renderPlayers);
+  els.teamSelect.addEventListener("change", () => {
+    const teamId = clean(els.teamSelect.value);
+    state.players = [];
+    els.playerSelect.innerHTML = '<option value="">Loading players...</option>';
+    els.multiPlayers.innerHTML = '';
+    postToWix("LOAD_TEAM_PLAYERS", { teamId });
+  });
+
   els.massType.addEventListener("change", updateMassTypeUI);
   els.filmUrl.addEventListener("input", updatePreview);
 
@@ -1039,7 +1007,8 @@
       els.filmTitle.value = clean(payload.title);
       els.filmNotes.value = clean(payload.notes);
       els.teamSelect.value = clean(payload.teamId);
-      renderPlayers();
+
+      postToWix("LOAD_TEAM_PLAYERS", { teamId: clean(payload.teamId) });
 
       const incomingVideoMode = clean(payload.videoMode || "link");
       setVideoMode(incomingVideoMode);
@@ -1057,19 +1026,21 @@
         els.previewText.textContent = "Existing uploaded file loaded.";
       }
 
-      if(clean(payload.mode) === "mass"){
-        setMode("mass");
-        els.massType.value = clean(payload.massType) || "team";
-        updateMassTypeUI();
+      setTimeout(() => {
+        if(clean(payload.mode) === "mass"){
+          setMode("mass");
+          els.massType.value = clean(payload.massType) || "team";
+          updateMassTypeUI();
 
-        const selected = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
-        Array.from(els.multiPlayers.options).forEach(opt => {
-          opt.selected = selected.includes(clean(opt.value));
-        });
-      }else{
-        setMode("single");
-        els.playerSelect.value = clean(payload.playerId);
-      }
+          const selected = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
+          Array.from(els.multiPlayers.options).forEach(opt => {
+            opt.selected = selected.includes(clean(opt.value));
+          });
+        }else{
+          setMode("single");
+          els.playerSelect.value = clean(payload.playerId);
+        }
+      }, 250);
 
       setStatus("Film loaded for edit.", "success");
     }

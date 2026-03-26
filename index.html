@@ -19,7 +19,6 @@
       --accent:#7B2EFF;
       --accent2:#B266FF;
       --clubGlow:rgba(123,46,255,.18);
-      --nav:#111111;
 
       --ok:#22c55e;
       --warn:#f59e0b;
@@ -118,7 +117,7 @@
       line-height:.94;
       letter-spacing:.03em;
       text-transform:uppercase;
-      color:var(--text);
+      color:#fff;
     }
 
     .subtitle{
@@ -140,7 +139,7 @@
       border-radius:999px;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
-      color:var(--text);
+      color:#fff;
       font-size:12px;
       font-weight:800;
       letter-spacing:.08em;
@@ -191,7 +190,7 @@
       font-size:30px;
       letter-spacing:.04em;
       text-transform:uppercase;
-      color:var(--text);
+      color:#fff;
     }
 
     .section-title:after{
@@ -231,7 +230,7 @@
     label{
       display:block;
       margin:0 0 8px;
-      color:var(--text);
+      color:#fff;
       font-size:12px;
       font-weight:800;
       letter-spacing:.1em;
@@ -242,7 +241,7 @@
       width:100%;
       border:1px solid var(--border);
       background:var(--panel2);
-      color:var(--text);
+      color:#fff;
       border-radius:18px;
       padding:14px 14px;
       font-size:14px;
@@ -279,7 +278,7 @@
       appearance:none;
       border:1px solid var(--border);
       background:rgba(255,255,255,.04);
-      color:var(--text);
+      color:#fff;
       border-radius:999px;
       padding:12px 16px;
       font-size:12px;
@@ -345,7 +344,7 @@
     }
 
     .btn-secondary{
-      color:var(--text);
+      color:#fff;
       background:rgba(255,255,255,.06);
       border:1px solid var(--border);
     }
@@ -385,7 +384,7 @@
       line-height:1;
       letter-spacing:.03em;
       text-transform:uppercase;
-      color:var(--text);
+      color:#fff;
     }
 
     .list{
@@ -405,7 +404,7 @@
       font-size:18px;
       font-weight:900;
       letter-spacing:.01em;
-      color:var(--text);
+      color:#fff;
     }
 
     .tag-row{
@@ -424,7 +423,7 @@
       text-transform:uppercase;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
-      color:var(--text);
+      color:#fff;
     }
 
     .film-actions{
@@ -445,7 +444,7 @@
       text-transform:uppercase;
       border:1px solid var(--border);
       background:rgba(255,255,255,.05);
-      color:var(--text);
+      color:#fff;
     }
 
     .helper{
@@ -571,10 +570,6 @@
             </div>
 
             <div class="status" id="statusText">Ready.</div>
-
-            <div class="helper">
-              This version supports both pasted links and uploaded files. Uploaded files are converted to file data and sent back to your Wix page code through postMessage.
-            </div>
           </div>
         </div>
 
@@ -683,58 +678,29 @@
       videoMode: document.getElementById("videoMode")
     };
 
-    function clean(v){
-      return String(v || "").trim();
-    }
+    function clean(v){ return String(v || "").trim(); }
 
     function setStatus(text, type){
       els.statusText.className = "status" + (type ? " " + type : "");
       els.statusText.textContent = text || "";
     }
 
-    function isLightColor(hex){
-      const value = clean(hex).replace("#", "");
-      if (value.length !== 6) return true;
-      const r = parseInt(value.substring(0,2), 16);
-      const g = parseInt(value.substring(2,4), 16);
-      const b = parseInt(value.substring(4,6), 16);
-      const brightness = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-      return brightness > 150;
-    }
-
     function applyTheme(payload = {}){
       const accent = clean(payload.accent) || "#7B2EFF";
       const accent2 = clean(payload.accent2) || "#B266FF";
       const glow = clean(payload.clubGlow) || "rgba(123,46,255,.18)";
-      const text = clean(payload.text) || "#FFFFFF";
-      const nav = clean(payload.nav) || "#111111";
 
       document.documentElement.style.setProperty("--accent", accent);
       document.documentElement.style.setProperty("--accent2", accent2);
       document.documentElement.style.setProperty("--clubGlow", glow);
-      document.documentElement.style.setProperty("--text", text);
-      document.documentElement.style.setProperty("--nav", nav);
 
-      const lightNav = isLightColor(nav);
-      const lightText = isLightColor(text);
-
-      document.documentElement.style.setProperty("--bg", nav);
-      document.documentElement.style.setProperty("--bg2", nav);
-
-      if (lightNav) {
-        document.documentElement.style.setProperty("--panel", "rgba(255,255,255,.72)");
-        document.documentElement.style.setProperty("--panel2", "rgba(0,0,0,.04)");
-        document.documentElement.style.setProperty("--border", "rgba(0,0,0,.10)");
-      } else {
-        document.documentElement.style.setProperty("--panel", "rgba(17,17,17,.90)");
-        document.documentElement.style.setProperty("--panel2", "rgba(255,255,255,.04)");
-        document.documentElement.style.setProperty("--border", "rgba(255,255,255,.10)");
-      }
-
-      document.documentElement.style.setProperty(
-        "--muted",
-        lightText ? "rgba(255,255,255,.66)" : "rgba(0,0,0,.62)"
-      );
+      document.documentElement.style.setProperty("--text", "#FFFFFF");
+      document.documentElement.style.setProperty("--muted", "rgba(255,255,255,.66)");
+      document.documentElement.style.setProperty("--bg", "#0a0a0a");
+      document.documentElement.style.setProperty("--bg2", "#111111");
+      document.documentElement.style.setProperty("--panel", "rgba(17,17,17,.90)");
+      document.documentElement.style.setProperty("--panel2", "rgba(255,255,255,.04)");
+      document.documentElement.style.setProperty("--border", "rgba(255,255,255,.10)");
     }
 
     function renderHeader(){
@@ -763,12 +729,10 @@
 
     function getPlayersForSelectedTeam(){
       const teamId = clean(els.teamSelect.value);
-      if(!teamId) return state.players;
-
+      if(!teamId) return [];
       return state.players.filter(player => {
-        const one = clean(player.teamId);
         const many = Array.isArray(player.teamIds) ? player.teamIds.map(clean) : [];
-        return one === teamId || many.includes(teamId);
+        return many.includes(teamId);
       });
     }
 
@@ -801,7 +765,6 @@
       const isMass = state.mode === "mass";
       els.singlePlayerWrap.classList.toggle("hidden", isMass);
       els.massWrap.classList.toggle("hidden", !isMass);
-
       updateMassTypeUI();
     }
 
@@ -840,20 +803,15 @@
         const id = raw.split("v=")[1]?.split("&")[0];
         return id ? `https://www.youtube.com/embed/${id}` : "";
       }
-
       if(raw.includes("youtu.be/")){
         const id = raw.split("youtu.be/")[1]?.split("?")[0];
         return id ? `https://www.youtube.com/embed/${id}` : "";
       }
-
       if(raw.includes("vimeo.com/")){
         const id = raw.split("vimeo.com/")[1]?.split("?")[0];
         return id ? `https://player.vimeo.com/video/${id}` : "";
       }
-
-      if(raw.endsWith(".mp4")){
-        return raw;
-      }
+      if(raw.endsWith(".mp4")) return raw;
 
       return raw;
     }
@@ -910,26 +868,16 @@
 
     function validatePayload(payload){
       if(!payload.title) return "Add a film title.";
-
-      if(payload.videoMode === "link" && !payload.videoUrl){
-        return "Add a video URL.";
-      }
-
-      if(payload.videoMode === "upload" && !payload.uploadBase64){
-        return "Choose a file to upload.";
-      }
+      if(payload.videoMode === "link" && !payload.videoUrl) return "Add a video URL.";
+      if(payload.videoMode === "upload" && !payload.uploadBase64) return "Choose a file to upload.";
+      if(!payload.teamId) return "Select a team.";
 
       if(state.mode === "single" && !payload.playerId){
         return "Select a player.";
       }
 
-      if(state.mode === "mass"){
-        if(payload.massType === "team" && !payload.teamId){
-          return "Select a team for mass send.";
-        }
-        if(payload.massType === "custom" && !payload.playerIds.length){
-          return "Select at least one player.";
-        }
+      if(state.mode === "mass" && payload.massType === "custom" && !payload.playerIds.length){
+        return "Select at least one player.";
       }
 
       return "";
@@ -943,9 +891,7 @@
       els.playerSelect.value = "";
       els.massType.value = "team";
 
-      Array.from(els.multiPlayers.options).forEach(opt => {
-        opt.selected = false;
-      });
+      Array.from(els.multiPlayers.options).forEach(opt => opt.selected = false);
 
       if(els.filmUpload) els.filmUpload.value = "";
 
@@ -1016,13 +962,11 @@
     function fileToBase64(file){
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-
         reader.onload = () => {
           const result = String(reader.result || "");
           const commaIndex = result.indexOf(",");
           resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
         };
-
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });

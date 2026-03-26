@@ -197,7 +197,6 @@
     }
 
     .card:hover .section-title:after{width:116px}
-
     .muted{color:var(--muted)}
 
     .form-grid{
@@ -232,6 +231,10 @@
       padding:14px 14px;
       font-size:14px;
       outline:none;
+    }
+
+    select[multiple]{
+      min-height:160px;
     }
 
     textarea{
@@ -289,6 +292,7 @@
       color:var(--muted);
       font-size:13px;
       line-height:1.55;
+      word-break:break-word;
     }
 
     .actions{
@@ -471,14 +475,14 @@
           </div>
           <h1 class="title">Coach Film Room</h1>
           <div class="subtitle">
-            Send individual or mass film clips to players using either a pasted video link or an uploaded file.
+            Send individual or mass film clips to players using either a pasted video link or an uploaded video file.
           </div>
         </div>
 
         <div class="hero-pills">
           <div class="pill" id="clubPill">Club</div>
           <div class="pill" id="coachPill">Coach</div>
-        
+         
         </div>
       </div>
     </section>
@@ -488,7 +492,7 @@
         <div class="card">
           <div class="card-inner">
             <h2 class="section-title">Send Film</h2>
-            <div class="muted">Choose your send type, choose link or upload, then assign the film.</div>
+            <div class="muted">Choose send type, choose link or upload, then assign the film.</div>
 
             <div class="segmented" id="assignMode">
               <button class="seg-btn active" data-mode="single" type="button">Single Player</button>
@@ -513,16 +517,14 @@
 
               <div class="full" id="linkWrap">
                 <label for="filmUrl">Video URL</label>
-                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4, or Wix-hosted video link"/>
+                <input id="filmUrl" type="text" placeholder="Paste YouTube, Vimeo, MP4 video link"/>
               </div>
 
               <div class="full hidden" id="uploadWrap">
                 <label for="filmUpload">Upload Video File</label>
                 <div class="upload-box">
                   <input id="filmUpload" type="file" accept="video/*"/>
-                  <div class="upload-note" id="uploadFileName">
-                    No file selected yet.
-                  </div>
+                  <div class="upload-note" id="uploadFileName">No file selected yet.</div>
                 </div>
               </div>
 
@@ -550,7 +552,7 @@
 
               <div class="full hidden" id="multiPlayersWrap">
                 <label for="multiPlayers">Selected Players</label>
-                <select id="multiPlayers" multiple style="min-height:150px;"></select>
+                <select id="multiPlayers" multiple></select>
               </div>
             </div>
 
@@ -563,7 +565,7 @@
             <div class="status" id="statusText">Ready.</div>
 
             <div class="helper">
-              
+             
             </div>
           </div>
         </div>
@@ -635,7 +637,10 @@
       teams: [],
       players: [],
       recentFilms: [],
-      uploadedFile: null
+      uploadedFile: null,
+      uploadedFileBase64: "",
+      uploadedFileMimeType: "",
+      uploadedFileName: ""
     };
 
     const els = {
@@ -670,7 +675,9 @@
       videoMode: document.getElementById("videoMode")
     };
 
-    function clean(v){ return String(v || "").trim(); }
+    function clean(v){
+      return String(v || "").trim();
+    }
 
     function setStatus(text, type){
       els.statusText.className = "status" + (type ? " " + type : "");
@@ -681,6 +688,7 @@
       const accent = clean(payload.accent) || "#7B2EFF";
       const accent2 = clean(payload.accent2) || "#B266FF";
       const glow = clean(payload.clubGlow) || "rgba(123,46,255,.18)";
+
       document.documentElement.style.setProperty("--accent", accent);
       document.documentElement.style.setProperty("--accent2", accent2);
       document.documentElement.style.setProperty("--clubGlow", glow);
@@ -766,10 +774,10 @@
       els.uploadWrap.classList.toggle("hidden", !isUpload);
 
       if(isUpload){
-        els.previewText.textContent = state.uploadedFile
-          ? "File selected. Wix upload will provide the preview URL."
-          : "Choose a video file to upload.";
         els.previewFrame.src = "";
+        els.previewText.textContent = state.uploadedFileName
+          ? "Upload selected. Wix page code will save this file."
+          : "Choose a video file to upload.";
       } else {
         updatePreview();
       }
@@ -789,15 +797,20 @@
         const id = raw.split("v=")[1]?.split("&")[0];
         return id ? `https://www.youtube.com/embed/${id}` : "";
       }
+
       if(raw.includes("youtu.be/")){
         const id = raw.split("youtu.be/")[1]?.split("?")[0];
         return id ? `https://www.youtube.com/embed/${id}` : "";
       }
+
       if(raw.includes("vimeo.com/")){
         const id = raw.split("vimeo.com/")[1]?.split("?")[0];
         return id ? `https://player.vimeo.com/video/${id}` : "";
       }
-      if(raw.endsWith(".mp4")) return raw;
+
+      if(raw.endsWith(".mp4")){
+        return raw;
+      }
 
       return raw;
     }
@@ -822,7 +835,15 @@
     }
 
     function getSelectedMultiPlayers(){
-      return Array.from(els.multiPlayers.selectedOptions || []).map(opt => clean(opt.value)).filter(Boolean);
+      return Array.from(els.multiPlayers.selectedOptions || [])
+        .map(opt => clean(opt.value))
+        .filter(Boolean);
+    }
+
+    function postToWix(type, payload = {}){
+      if(window.parent){
+        window.parent.postMessage({ type, payload }, "*");
+      }
     }
 
     function buildPayload(action){
@@ -833,8 +854,9 @@
         title: clean(els.filmTitle.value),
         notes: clean(els.filmNotes.value),
         videoUrl: state.videoMode === "link" ? clean(els.filmUrl.value) : "",
-        uploadFileName: state.uploadedFile ? clean(state.uploadedFile.name) : "",
-        uploadFileType: state.uploadedFile ? clean(state.uploadedFile.type) : "",
+        uploadFileName: state.videoMode === "upload" ? clean(state.uploadedFileName) : "",
+        uploadFileType: state.videoMode === "upload" ? clean(state.uploadedFileMimeType) : "",
+        uploadBase64: state.videoMode === "upload" ? state.uploadedFileBase64 : "",
         teamId: clean(els.teamSelect.value),
         playerId: clean(els.playerSelect.value),
         massType: clean(els.massType.value),
@@ -850,7 +872,7 @@
         return "Add a video URL.";
       }
 
-      if(payload.videoMode === "upload" && !state.uploadedFile){
+      if(payload.videoMode === "upload" && !payload.uploadBase64){
         return "Choose a file to upload.";
       }
 
@@ -870,12 +892,6 @@
       return "";
     }
 
-    function postToWix(type, payload = {}){
-      if(window.parent){
-        window.parent.postMessage({ type, payload }, "*");
-      }
-    }
-
     function clearForm(){
       els.filmTitle.value = "";
       els.filmNotes.value = "";
@@ -883,10 +899,20 @@
       els.teamSelect.value = "";
       els.playerSelect.value = "";
       els.massType.value = "team";
-      Array.from(els.multiPlayers.options).forEach(opt => opt.selected = false);
+
+      Array.from(els.multiPlayers.options).forEach(opt => {
+        opt.selected = false;
+      });
+
       if(els.filmUpload) els.filmUpload.value = "";
+
       state.uploadedFile = null;
+      state.uploadedFileBase64 = "";
+      state.uploadedFileMimeType = "";
+      state.uploadedFileName = "";
+
       els.uploadFileName.textContent = "No file selected yet.";
+
       renderPlayers();
       updateMassTypeUI();
       updatePreview();
@@ -914,7 +940,7 @@
         const teamName = clean(item.teamName);
         const notes = clean(item.notes);
         const mode = clean(item.mode) || "single";
-        const videoType = clean(item.videoMode || item.videoType || "link");
+        const videoType = clean(item.videoMode || "link");
         const created = clean(item.createdDate || item.createdAt || "");
         const formattedDate = created ? new Date(created).toLocaleString() : "";
 
@@ -944,6 +970,21 @@
       });
     }
 
+    function fileToBase64(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const result = String(reader.result || "");
+          const commaIndex = result.indexOf(",");
+          resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+        };
+
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     els.assignMode.addEventListener("click", (e) => {
       const btn = e.target.closest(".seg-btn");
       if(!btn) return;
@@ -960,22 +1001,47 @@
     els.massType.addEventListener("change", updateMassTypeUI);
     els.filmUrl.addEventListener("input", updatePreview);
 
-    els.filmUpload.addEventListener("change", (e) => {
+    els.filmUpload.addEventListener("change", async (e) => {
       const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
-      state.uploadedFile = file;
 
-      if(file){
-        els.uploadFileName.textContent = `Selected: ${file.name}`;
-        els.previewText.textContent = "File selected. Wix upload will provide the preview URL.";
-        setStatus("File selected and ready for Wix upload.", "success");
-      } else {
+      state.uploadedFile = file;
+      state.uploadedFileBase64 = "";
+      state.uploadedFileMimeType = "";
+      state.uploadedFileName = "";
+
+      if(!file){
         els.uploadFileName.textContent = "No file selected yet.";
+        return;
+      }
+
+      try{
+        setStatus("Reading file...", "warn");
+
+        const base64 = await fileToBase64(file);
+
+        state.uploadedFileBase64 = base64;
+        state.uploadedFileMimeType = clean(file.type);
+        state.uploadedFileName = clean(file.name);
+
+        els.uploadFileName.textContent = `Selected: ${file.name}`;
+        els.previewFrame.src = "";
+        els.previewText.textContent = "Upload selected. Wix page code will save this file.";
+        setStatus("File ready to upload.", "success");
+      }catch(err){
+        console.error(err);
+        state.uploadedFile = null;
+        state.uploadedFileBase64 = "";
+        state.uploadedFileMimeType = "";
+        state.uploadedFileName = "";
+        els.uploadFileName.textContent = "Failed to read file.";
+        setStatus("Could not read the selected file.", "error");
       }
     });
 
     els.sendBtn.addEventListener("click", () => {
       const payload = buildPayload("sendFilm");
       const error = validatePayload(payload);
+
       if(error){
         setStatus(error, "error");
         return;
@@ -984,7 +1050,7 @@
       if(state.videoMode === "upload"){
         setStatus("Uploading and sending film...", "warn");
         postToWix("UPLOAD_AND_SEND_FILM", payload);
-      } else {
+      }else{
         setStatus("Sending film...", "warn");
         postToWix("SEND_FILM", payload);
       }
@@ -993,6 +1059,7 @@
     els.saveDraftBtn.addEventListener("click", () => {
       const payload = buildPayload("saveDraft");
       const error = validatePayload(payload);
+
       if(error){
         setStatus(error, "error");
         return;
@@ -1001,7 +1068,7 @@
       if(state.videoMode === "upload"){
         setStatus("Uploading and saving draft...", "warn");
         postToWix("UPLOAD_AND_SAVE_FILM_DRAFT", payload);
-      } else {
+      }else{
         setStatus("Saving draft...", "warn");
         postToWix("SAVE_FILM_DRAFT", payload);
       }
@@ -1014,6 +1081,7 @@
       if(!btn) return;
 
       const action = btn.dataset.action;
+
       if(action === "preview"){
         const url = clean(btn.dataset.url);
         if(url){
@@ -1071,19 +1139,31 @@
         setStatus(clean(payload.message) || "Updated.", clean(payload.kind) || "");
       }
 
+      if(type === "FILM_SAVED_OK"){
+        setStatus(clean(payload.message) || "Film saved successfully.", "success");
+      }
+
+      if(type === "FILM_DELETED_OK"){
+        setStatus(clean(payload.message) || "Film deleted.", "success");
+      }
+
       if(type === "LOAD_FILM_FOR_EDIT"){
         els.filmTitle.value = clean(payload.title);
         els.filmNotes.value = clean(payload.notes);
         els.teamSelect.value = clean(payload.teamId);
         renderPlayers();
 
-        const videoMode = clean(payload.videoMode || payload.videoType || "link");
-        setVideoMode(videoMode);
+        const incomingVideoMode = clean(payload.videoMode || "link");
+        setVideoMode(incomingVideoMode);
 
-        if(videoMode === "link"){
+        if(incomingVideoMode === "link"){
           els.filmUrl.value = clean(payload.videoUrl);
           updatePreview();
-        } else {
+        }else{
+          state.uploadedFile = null;
+          state.uploadedFileBase64 = "";
+          state.uploadedFileMimeType = clean(payload.uploadFileType);
+          state.uploadedFileName = clean(payload.uploadFileName);
           els.uploadFileName.textContent = clean(payload.uploadFileName) || "Existing uploaded file";
           els.previewFrame.src = "";
           els.previewText.textContent = "Existing uploaded file loaded.";
@@ -1093,11 +1173,12 @@
           setMode("mass");
           els.massType.value = clean(payload.massType) || "team";
           updateMassTypeUI();
+
           const selected = Array.isArray(payload.playerIds) ? payload.playerIds.map(clean) : [];
           Array.from(els.multiPlayers.options).forEach(opt => {
             opt.selected = selected.includes(clean(opt.value));
           });
-        } else {
+        }else{
           setMode("single");
           els.playerSelect.value = clean(payload.playerId);
         }
